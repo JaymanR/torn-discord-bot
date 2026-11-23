@@ -1,0 +1,7 @@
+﻿services:
+  torndiscordbot:
+    image: torndiscordbot
+    build:
+      context: .
+      dockerfile: TornDiscordBot/Dockerfile
+
