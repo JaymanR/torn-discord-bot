@@ -1,0 +1,74 @@
+:root {
+  color-scheme: light dark;
+  --bg: #ffffff;
+  --fg: #1f2328;
+  --muted: #59636e;
+  --link: #0b5fd6;
+  --rule: #d1d9e0;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #0f1216;
+    --fg: #e6e8eb;
+    --muted: #9aa4af;
+    --link: #6cb0ff;
+    --rule: #2b323a;
+  }
+}
+
+body {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  line-height: 1.6;
+  color: var(--fg);
+  background: var(--bg);
+  max-width: 46rem;
+  margin: 0 auto;
+  padding: 1.5rem 1rem 3rem;
+}
+
+a {
+  color: var(--link);
+}
+
+h1 {
+  font-size: 1.8rem;
+  margin-bottom: 0.25rem;
+}
+
+h2 {
+  font-size: 1.15rem;
+  margin-top: 2rem;
+}
+
+.meta {
+  color: var(--muted);
+  margin-top: 0;
+}
+
+hr {
+  border: 0;
+  border-top: 1px solid var(--rule);
+  margin: 2rem 0 1rem;
+}
+
+footer {
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+/* Home page */
+.home {
+  text-align: center;
+  padding-top: 18vh;
+}
+
+.home ul {
+  list-style: none;
+  padding: 0;
+  font-size: 1.15rem;
+}
+
+.home li {
+  margin: 0.75rem 0;
+}
