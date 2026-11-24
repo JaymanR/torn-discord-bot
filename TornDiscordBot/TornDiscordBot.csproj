@@ -6,19 +6,19 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
         <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
-      <UserSecretsId>30f83fac-8946-4f1f-9b68-3cdb683e4525</UserSecretsId>
-  </PropertyGroup>
+        <UserSecretsId>30f83fac-8946-4f1f-9b68-3cdb683e4525</UserSecretsId>
+    </PropertyGroup>
 
     <ItemGroup>
-      <Content Include="..\.dockerignore">
-        <Link>.dockerignore</Link>
-      </Content>
+        <Content Include="..\.dockerignore">
+            <Link>.dockerignore</Link>
+        </Content>
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="Microsoft.Extensions.Hosting" Version="11.0.0" />
-      <PackageReference Include="NetCord" Version="1.0.0-beta.30" />
-      <PackageReference Include="NetCord.Hosting" Version="1.0.0-beta.30" />
+        <PackageReference Include="Microsoft.Extensions.Hosting" Version="11.0.0"/>
+        <PackageReference Include="NetCord" Version="1.0.0-beta.30"/>
+        <PackageReference Include="NetCord.Hosting" Version="1.0.0-beta.30"/>
     </ItemGroup>
 
 </Project>
