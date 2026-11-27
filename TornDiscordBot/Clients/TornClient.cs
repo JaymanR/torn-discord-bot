@@ -1,8 +1,10 @@
 using System.Net.Http.Headers;
 using System.Text.Json;
 using Microsoft.Extensions.Logging;
+using TornDiscordBot.Interfaces;
+using TornDiscordBot.Models;
 
-namespace TornDiscordBot.Torn;
+namespace TornDiscordBot.Clients;
 
 /// <summary>An <see cref="ITornClient"/> for Torn API v2.</summary>
 public sealed class TornClient(HttpClient http, ILogger<TornClient> logger) : ITornClient

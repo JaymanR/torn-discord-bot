@@ -1,7 +1,9 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using TornDiscordBot.Clients;
+using TornDiscordBot.Interfaces;
 
-namespace TornDiscordBot.Torn;
+namespace TornDiscordBot.Extensions.Startup;
 
 /// <summary>Setup for Torn API access.</summary>
 public static class TornExtensions

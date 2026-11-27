@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
-using TornDiscordBot.Data.Entities;
+using TornDiscordBot.Entities;
+using TornDiscordBot.Interfaces;
 using TornDiscordBot.Security;
 
 namespace TornDiscordBot.Data;

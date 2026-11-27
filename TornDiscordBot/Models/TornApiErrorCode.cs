@@ -1,4 +1,4 @@
-namespace TornDiscordBot.Torn;
+namespace TornDiscordBot.Models;
 
 /// <summary>
 /// The subset of Torn API error codes the bot reacts to

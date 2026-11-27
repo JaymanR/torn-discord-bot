@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using TornDiscordBot.Data.Entities;
+using TornDiscordBot.Entities;
 
 namespace TornDiscordBot.Data;
 

@@ -4,11 +4,8 @@ using NetCord.Hosting.Gateway;
 using NetCord.Hosting.Services.ApplicationCommands;
 using NetCord.Hosting.Services.ComponentInteractions;
 using NetCord.Services.ComponentInteractions;
-using TornDiscordBot.Data;
-using TornDiscordBot.Messaging;
-using TornDiscordBot.Registration;
+using TornDiscordBot.Extensions.Startup;
 using TornDiscordBot.Security;
-using TornDiscordBot.Torn;
 
 var builder = Host.CreateApplicationBuilder(args);
 

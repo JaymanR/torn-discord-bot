@@ -1,8 +1,9 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using TornDiscordBot.Data;
 
-namespace TornDiscordBot.Data;
+namespace TornDiscordBot.Extensions.Startup;
 
 /// <summary>Database setup for the host.</summary>
 public static class DatabaseExtensions

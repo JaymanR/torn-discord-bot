@@ -1,8 +1,9 @@
 using System.Net;
 using Microsoft.Extensions.Logging.Abstractions;
-using TornDiscordBot.Torn;
+using TornDiscordBot.Clients;
+using TornDiscordBot.Models;
 
-namespace TornDiscordBot.Tests.Torn;
+namespace TornDiscordBot.Tests.Clients;
 
 /// <summary>Tests for <see cref="TornClient"/> using a fake HTTP handler, so Torn is never called.</summary>
 public class TornClientTests

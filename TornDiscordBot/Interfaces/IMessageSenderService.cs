@@ -1,4 +1,4 @@
-namespace TornDiscordBot.Messaging;
+namespace TornDiscordBot.Interfaces;
 
 /// <summary>Sends messages to Discord.</summary>
 public interface IMessageSenderService

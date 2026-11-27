@@ -4,9 +4,9 @@ using Microsoft.Data.Sqlite;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using TornDiscordBot.Data;
-using TornDiscordBot.Registration;
-using TornDiscordBot.Torn;
+using TornDiscordBot.Extensions.Startup;
+using TornDiscordBot.Interfaces;
+using TornDiscordBot.Models;
 
 namespace TornDiscordBot.Tests;
 

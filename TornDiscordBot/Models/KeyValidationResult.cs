@@ -1,4 +1,4 @@
-namespace TornDiscordBot.Torn;
+namespace TornDiscordBot.Models;
 
 /// <summary>The outcome of checking a Torn API key.</summary>
 public enum KeyValidationResult

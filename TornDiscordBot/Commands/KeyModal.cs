@@ -3,10 +3,10 @@ using Microsoft.Extensions.Logging;
 using NetCord;
 using NetCord.Rest;
 using NetCord.Services.ComponentInteractions;
-using TornDiscordBot.Data;
-using TornDiscordBot.Torn;
+using TornDiscordBot.Interfaces;
+using TornDiscordBot.Models;
 
-namespace TornDiscordBot.Registration;
+namespace TornDiscordBot.Commands;
 
 /// <summary>Handles submissions of the API key modal opened by <c>/register</c>.</summary>
 public partial class KeyModal(IRegisteredUserRepository userRepository, ITornClient tornClient, ILogger<KeyModal> logger)

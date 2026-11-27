@@ -17,7 +17,7 @@ namespace TornDiscordBot.Data.Migrations
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "10.0.15");
 
-            modelBuilder.Entity("TornDiscordBot.Data.Entities.RegisteredUser", b =>
+            modelBuilder.Entity("TornDiscordBot.Entities.RegisteredUser", b =>
                 {
                     b.Property<long>("DiscordUserId")
                         .HasColumnType("INTEGER");

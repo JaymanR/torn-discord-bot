@@ -1,6 +1,7 @@
 using NetCord.Rest;
+using TornDiscordBot.Interfaces;
 
-namespace TornDiscordBot.Messaging;
+namespace TornDiscordBot.Services;
 
 /// <summary>Sends messages through the Discord REST API.</summary>
 public class MessageSenderService(RestClient client) : IMessageSenderService

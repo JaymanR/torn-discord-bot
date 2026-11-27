@@ -1,9 +1,9 @@
 using NetCord;
 using NetCord.Rest;
 using NetCord.Services.ApplicationCommands;
-using TornDiscordBot.Data;
+using TornDiscordBot.Interfaces;
 
-namespace TornDiscordBot.Registration;
+namespace TornDiscordBot.Commands;
 
 /// <summary>Slash commands for managing a user's Torn API key.</summary>
 public class KeyCommands(IRegisteredUserRepository userRepository) : ApplicationCommandModule<ApplicationCommandContext>

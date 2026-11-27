@@ -1,7 +1,9 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using TornDiscordBot.Interfaces;
+using TornDiscordBot.Services;
 
-namespace TornDiscordBot.Messaging;
+namespace TornDiscordBot.Extensions.Startup;
 
 /// <summary>Setup for outgoing Discord messages.</summary>
 public static class MessagingExtensions

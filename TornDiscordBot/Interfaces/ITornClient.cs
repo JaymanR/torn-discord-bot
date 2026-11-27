@@ -1,5 +1,6 @@
+using TornDiscordBot.Models;
 
-namespace TornDiscordBot.Torn;
+namespace TornDiscordBot.Interfaces;
 
 /// <summary>Client for the Torn API.</summary>
 public interface ITornClient

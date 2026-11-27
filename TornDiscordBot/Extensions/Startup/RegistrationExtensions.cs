@@ -2,10 +2,12 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using NetCord.Hosting.Services.ApplicationCommands;
 using NetCord.Hosting.Services.ComponentInteractions;
+using TornDiscordBot.Commands;
 using TornDiscordBot.Data;
+using TornDiscordBot.Interfaces;
 using TornDiscordBot.Security;
 
-namespace TornDiscordBot.Registration;
+namespace TornDiscordBot.Extensions.Startup;
 
 /// <summary>Setup for the registration feature.</summary>
 public static class RegistrationExtensions
