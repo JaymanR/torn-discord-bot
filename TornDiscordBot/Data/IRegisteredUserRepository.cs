@@ -1,4 +1,4 @@
-namespace TornDiscordBot.Registration;
+namespace TornDiscordBot.Data;
 
 /// <summary>Persists registered users and their Torn API keys.</summary>
 public interface IRegisteredUserRepository

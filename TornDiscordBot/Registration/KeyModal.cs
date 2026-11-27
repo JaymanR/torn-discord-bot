@@ -3,6 +3,7 @@ using Microsoft.Extensions.Logging;
 using NetCord;
 using NetCord.Rest;
 using NetCord.Services.ComponentInteractions;
+using TornDiscordBot.Data;
 using TornDiscordBot.Torn;
 
 namespace TornDiscordBot.Registration;

@@ -3,10 +3,9 @@ using System.Text;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using TornDiscordBot.Data;
-using TornDiscordBot.Registration;
 using TornDiscordBot.Security;
 
-namespace TornDiscordBot.Tests.Registration;
+namespace TornDiscordBot.Tests.Data;
 
 /// <summary>Tests for <see cref="RegisteredUserRepository"/> against a real, temporary SQLite database.</summary>
 public sealed class RegisteredUserRepositoryTests : IAsyncLifetime

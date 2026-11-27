@@ -1,6 +1,7 @@
 using NetCord;
 using NetCord.Rest;
 using NetCord.Services.ApplicationCommands;
+using TornDiscordBot.Data;
 
 namespace TornDiscordBot.Registration;
 

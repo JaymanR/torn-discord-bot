@@ -2,6 +2,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using NetCord.Hosting.Services.ApplicationCommands;
 using NetCord.Hosting.Services.ComponentInteractions;
+using TornDiscordBot.Data;
 using TornDiscordBot.Security;
 
 namespace TornDiscordBot.Registration;

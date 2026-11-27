@@ -1,9 +1,8 @@
 using Microsoft.EntityFrameworkCore;
-using TornDiscordBot.Data;
 using TornDiscordBot.Data.Entities;
 using TornDiscordBot.Security;
 
-namespace TornDiscordBot.Registration;
+namespace TornDiscordBot.Data;
 
 /// <summary>An <see cref="IRegisteredUserRepository"/> backed by EF Core that encrypts keys before saving them.</summary>
 /// <remarks>
