@@ -3,3 +3,9 @@ obj/
 /packages/
 riderModule.iml
 /_ReSharper.Caches/
+# Secrets and local data must never be committed
+secrets/
+*.db
+*.db-shm
+*.db-wal
+*.db-journal
