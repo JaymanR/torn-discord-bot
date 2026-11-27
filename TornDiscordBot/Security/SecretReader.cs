@@ -6,23 +6,18 @@ namespace TornDiscordBot.Security;
 public static class SecretReader
 {
     /// <summary>Reads a secret from configuration, falling back to a Docker secret file.</summary>
-    /// <param name="configuration">Application configuration, including environment variables and user-secrets.</param>
+    /// <param name="config">Application configuration, including environment variables and user-secrets.</param>
     /// <param name="configKey">The configuration key to check first.</param>
     /// <param name="dockerSecretPath">The secret file to read if the key is not set.</param>
     /// <returns>The trimmed secret, or <see langword="null"/> if neither source has a value.</returns>
-    public static string? Read(IConfiguration configuration, string configKey, string dockerSecretPath)
+    public static string? Read(IConfiguration config, string configKey, string dockerSecretPath)
     {
-        var value = configuration[configKey];
+        var value = config[configKey];
         if (!string.IsNullOrWhiteSpace(value))
             return value.Trim();
 
-        if (File.Exists(dockerSecretPath))
-        {
-            value = File.ReadAllText(dockerSecretPath).Trim();
-            if (value.Length > 0)
-                return value;
-        }
-
-        return null;
+        if (!File.Exists(dockerSecretPath)) return null;
+        value = File.ReadAllText(dockerSecretPath).Trim();
+        return value.Length > 0 ? value : null;
     }
 }

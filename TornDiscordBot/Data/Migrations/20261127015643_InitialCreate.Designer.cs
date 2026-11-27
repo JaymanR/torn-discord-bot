@@ -11,7 +11,7 @@ using TornDiscordBot.Data;
 namespace TornDiscordBot.Data.Migrations
 {
     [DbContext(typeof(BotDbContext))]
-    [Migration("20261126230212_InitialCreate")]
+    [Migration("20261127015643_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -20,7 +20,7 @@ namespace TornDiscordBot.Data.Migrations
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "10.0.15");
 
-            modelBuilder.Entity("TornDiscordBot.Entities.RegisteredUser", b =>
+            modelBuilder.Entity("TornDiscordBot.Data.Entities.RegisteredUser", b =>
                 {
                     b.Property<long>("DiscordUserId")
                         .HasColumnType("INTEGER");
@@ -34,7 +34,7 @@ namespace TornDiscordBot.Data.Migrations
 
                     b.HasKey("DiscordUserId");
 
-                    b.ToTable("registered_users", (string)null);
+                    b.ToTable("RegisteredUsers");
                 });
 #pragma warning restore 612, 618
         }

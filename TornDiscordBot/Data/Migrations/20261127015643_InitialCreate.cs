@@ -12,7 +12,7 @@ namespace TornDiscordBot.Data.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "registered_users",
+                name: "RegisteredUsers",
                 columns: table => new
                 {
                     DiscordUserId = table.Column<long>(type: "INTEGER", nullable: false),
@@ -21,7 +21,7 @@ namespace TornDiscordBot.Data.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_registered_users", x => x.DiscordUserId);
+                    table.PrimaryKey("PK_RegisteredUsers", x => x.DiscordUserId);
                 });
         }
 
@@ -29,7 +29,7 @@ namespace TornDiscordBot.Data.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "registered_users");
+                name: "RegisteredUsers");
         }
     }
 }

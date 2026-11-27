@@ -1,22 +1,19 @@
 using NetCord;
 using NetCord.Rest;
 using NetCord.Services.ApplicationCommands;
-using TornDiscordBot.Interfaces;
 
-namespace TornDiscordBot.Commands;
+namespace TornDiscordBot.Registration;
 
 /// <summary>Slash commands for managing a user's Torn API key.</summary>
-public class KeyCommands(IApiKeyStore store) : ApplicationCommandModule<ApplicationCommandContext>
+public class KeyCommands(IRegisteredUserRepository userRepository) : ApplicationCommandModule<ApplicationCommandContext>
 {
     public const string RegisterModalId = "register-key";
-    public const string KeyInputId = "api-key";
+    public const string KeyInputId = "torn-api-key";
 
     /// <summary>Opens a private modal where the user enters their Torn API key.</summary>
     [SlashCommand("register", "Link your Torn API key so the bot can check your cooldowns")]
     public Task RegisterAsync()
     {
-        // A modal, not a slash-command option: option values are shown to everyone in the channel,
-        // while a modal is only visible to the user and nothing is posted.
         var modal = new ModalProperties(RegisterModalId, "Link your Torn API key")
         {
             Components =
@@ -43,7 +40,7 @@ public class KeyCommands(IApiKeyStore store) : ApplicationCommandModule<Applicat
     [SlashCommand("forget", "Delete your stored Torn API key")]
     public async Task ForgetAsync()
     {
-        var deleted = await store.DeleteAsync(Context.User.Id);
+        var deleted = await userRepository.DeleteAsync(Context.User.Id);
 
         await RespondAsync(InteractionCallback.Message(new InteractionMessageProperties
         {

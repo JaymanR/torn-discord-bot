@@ -1,4 +1,4 @@
-namespace TornDiscordBot.Entities;
+namespace TornDiscordBot.Data.Entities;
 
 /// <summary>A Discord user who has registered with the bot.</summary>
 public class RegisteredUser

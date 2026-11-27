@@ -3,24 +3,18 @@ using Microsoft.Extensions.Logging;
 using NetCord;
 using NetCord.Rest;
 using NetCord.Services.ComponentInteractions;
-using TornDiscordBot.Interfaces;
-using TornDiscordBot.Models;
+using TornDiscordBot.Torn;
 
-namespace TornDiscordBot.Commands;
+namespace TornDiscordBot.Registration;
 
 /// <summary>Handles submissions of the API key modal opened by <c>/register</c>.</summary>
-public partial class KeyModal(IApiKeyStore store, ITornClient torn, ILogger<KeyModal> logger)
+public partial class KeyModal(IRegisteredUserRepository userRepository, ITornClient tornClient, ILogger<KeyModal> logger)
     : ComponentInteractionModule<ModalInteractionContext>
 {
-    /// <summary>Matches the format of a Torn API key: 16 letters and digits.</summary>
-    [GeneratedRegex("^[A-Za-z0-9]{16}$")]
-    private static partial Regex KeyFormat();
-
     /// <summary>Validates the submitted key with Torn, stores it if valid, and replies privately with the result.</summary>
     [ComponentInteraction(KeyCommands.RegisterModalId)]
     public async Task SubmitAsync()
     {
-        // Validation calls Torn, which can take longer than Discord's 3 second window.
         await RespondAsync(InteractionCallback.DeferredMessage(MessageFlags.Ephemeral));
 
         var apiKey = Context.Components
@@ -28,8 +22,7 @@ public partial class KeyModal(IApiKeyStore store, ITornClient torn, ILogger<KeyM
             .Select(label => label.Component)
             .OfType<TextInput>()
             .FirstOrDefault(input => input.CustomId == KeyCommands.KeyInputId)
-            ?.Value
-            ?.Trim();
+            ?.Value.Trim();
 
         string reply;
         if (apiKey is null || !KeyFormat().IsMatch(apiKey))
@@ -38,10 +31,10 @@ public partial class KeyModal(IApiKeyStore store, ITornClient torn, ILogger<KeyM
         }
         else
         {
-            switch (await torn.ValidateKeyAsync(apiKey))
+            switch (await tornClient.ValidateKeyAsync(apiKey))
             {
                 case KeyValidationResult.Valid:
-                    await store.SaveAsync(Context.User.Id, apiKey);
+                    await userRepository.SaveTornApiKeyAsync(Context.User.Id, apiKey);
                     logger.LogInformation("Stored a Torn API key for Discord user {UserId}", Context.User.Id);
                     reply = "Key saved. Use `/forget` at any time to delete it.";
                     break;
@@ -52,6 +45,7 @@ public partial class KeyModal(IApiKeyStore store, ITornClient torn, ILogger<KeyM
                     reply = "That key doesn't have enough access to read cooldowns. " +
                             "Create a custom key that includes the user cooldowns selection.";
                     break;
+                case KeyValidationResult.Unavailable:
                 default:
                     reply = "I couldn't reach Torn to check that key. Please try again in a moment.";
                     break;
@@ -64,4 +58,8 @@ public partial class KeyModal(IApiKeyStore store, ITornClient torn, ILogger<KeyM
             Flags = MessageFlags.Ephemeral
         });
     }
+    
+    /// <summary>Matches the format of a Torn API key: 16 letters and digits.</summary>
+    [GeneratedRegex("^[A-Za-z0-9]{16}$")]
+    private static partial Regex KeyFormat();
 }
