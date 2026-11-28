@@ -4,14 +4,16 @@ using Microsoft.Data.Sqlite;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Options;
 using TornDiscordBot.Extensions.Startup;
 using TornDiscordBot.Interfaces;
 using TornDiscordBot.Models;
+using TornDiscordBot.Models.Reminders;
 
 namespace TornDiscordBot.Tests;
 
 /// <summary>
-/// Integration tests for the database, registration and Torn setup used at startup.
+/// Integration tests for the database, registration, Torn and reminder setup used at startup.
 /// Discord is not involved, and Torn is never called.
 /// </summary>
 public sealed class StartupTests : IDisposable
@@ -74,6 +76,18 @@ public sealed class StartupTests : IDisposable
     }
 
     [Fact]
+    public async Task StartedHost_ChecksRegisteredUsersCooldowns()
+    {
+        using var host = BuildHost();
+        await host.MigrateDatabaseAsync();
+        await host.Services.GetRequiredService<IRegisteredUserRepository>().SaveTornApiKeyAsync(UserId, Key);
+
+        await host.StartAsync();
+        await _torn.FirstRequest.WaitAsync(TimeSpan.FromSeconds(10));
+        await host.StopAsync();
+    }
+
+    [Fact]
     public void AddRegistration_Throws_WhenMasterKeyIsMissing()
     {
         var builder = Host.CreateEmptyApplicationBuilder(settings: null);
@@ -81,18 +95,42 @@ public sealed class StartupTests : IDisposable
         Assert.Throws<InvalidOperationException>(() => builder.AddRegistration());
     }
 
+    [Fact]
+    public void AddReminders_ReadsChannelFromConfiguration()
+    {
+        using var host = BuildHost(channelId: "123456789012345678");
+
+        var options = host.Services.GetRequiredService<IOptions<ReminderOptions>>().Value;
+
+        Assert.Equal(123456789012345678UL, options.ChannelId);
+    }
+
+    [Theory]
+    [InlineData(null)]
+    [InlineData("0")]
+    [InlineData("general")]
+    public async Task StartedHost_Throws_WhenChannelIsMissingOrInvalid(string? channelId)
+    {
+        using var host = BuildHost(channelId);
+
+        var error = await Assert.ThrowsAnyAsync<Exception>(() => host.StartAsync());
+
+        Assert.Contains("Reminders:ChannelId", error.Message);
+    }
+
     /// <summary>
     /// Builds a host with the same setup calls as <c>Program.cs</c>, apart from Discord and messaging.
     /// Building fails if a registered service has a missing dependency.
     /// </summary>
-    private IHost BuildHost()
+    private IHost BuildHost(string? channelId = "1")
     {
         // An empty builder ignores this machine's environment variables, settings files and user secrets.
         var builder = Host.CreateEmptyApplicationBuilder(settings: null);
         builder.Configuration.AddInMemoryCollection(new Dictionary<string, string?>
         {
             ["Database:Path"] = DatabasePath,
-            ["Security:MasterKey"] = _masterKey
+            ["Security:MasterKey"] = _masterKey,
+            ["Reminders:ChannelId"] = channelId
         });
         builder.ConfigureContainer(new DefaultServiceProviderFactory(
             new ServiceProviderOptions { ValidateOnBuild = true, ValidateScopes = true }));
@@ -100,6 +138,8 @@ public sealed class StartupTests : IDisposable
         builder.AddDatabase();
         builder.AddRegistration();
         builder.AddTornClient();
+        builder.AddReminderService();
+        builder.Services.AddSingleton<IMessageSenderService, SilentSender>(); // stands in for Discord
 
         // Applies to every HTTP client, so no request can reach the network.
         builder.Services.ConfigureHttpClientDefaults(http => http.ConfigurePrimaryHttpMessageHandler(() => _torn));
@@ -107,14 +147,26 @@ public sealed class StartupTests : IDisposable
         return builder.Build();
     }
 
+    /// <summary>Discards messages.</summary>
+    private sealed class SilentSender : IMessageSenderService
+    {
+        public Task SendAsync(ulong channelId, string message) => Task.CompletedTask;
+    }
+
     /// <summary>Answers every request with empty cooldowns and records the address requested.</summary>
     private sealed class FakeTornHandler : HttpMessageHandler
     {
+        private readonly TaskCompletionSource _firstRequest = new();
+
         public Uri? RequestUri { get; private set; }
+
+        /// <summary>Completes when the first request arrives.</summary>
+        public Task FirstRequest => _firstRequest.Task;
 
         protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken ct)
         {
             RequestUri = request.RequestUri;
+            _firstRequest.TrySetResult();
 
             return Task.FromResult(new HttpResponseMessage(HttpStatusCode.OK)
             {

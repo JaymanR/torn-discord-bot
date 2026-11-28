@@ -9,3 +9,6 @@ secrets/
 *.db-shm
 *.db-wal
 *.db-journal
+
+# Local settings for docker compose
+.env

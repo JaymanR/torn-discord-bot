@@ -17,6 +17,7 @@ builder.AddDatabase();
 builder.AddRegistration();
 builder.AddTornClient();
 builder.AddMessaging();
+builder.AddReminderService();
 
 builder.Services
     .AddDiscordGateway(options => options.Token = token)

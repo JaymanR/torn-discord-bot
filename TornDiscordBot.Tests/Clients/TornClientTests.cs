@@ -2,6 +2,7 @@ using System.Net;
 using Microsoft.Extensions.Logging.Abstractions;
 using TornDiscordBot.Clients;
 using TornDiscordBot.Models;
+using TornDiscordBot.Models.Torn;
 
 namespace TornDiscordBot.Tests.Clients;
 
@@ -48,6 +49,28 @@ public class TornClientTests
         var result = await CreateClient(handler).ValidateKeyAsync(Key);
 
         Assert.Equal(KeyValidationResult.Unavailable, result);
+    }
+
+    [Fact]
+    public async Task GetCooldownsAsync_ReadsDrugCooldownInSeconds()
+    {
+        var handler = new FakeHandler("""{"cooldowns":{"drug":3600,"medical":5,"booster":10}}""");
+
+        var result = await CreateClient(handler).GetCooldownsAsync(Key);
+
+        Assert.Equal(KeyValidationResult.Valid, result.KeyStatus);
+        Assert.Equal(new Cooldowns(TimeSpan.FromHours(1)), result.Cooldowns);
+    }
+
+    [Theory]
+    [InlineData("""{"error":{"code":2,"error":"Incorrect key"}}""")]
+    [InlineData("""{"error":{"code":10,"error":"Federal jail"}}""")]
+    [InlineData("""{"cooldowns":{}}""")]
+    public async Task GetCooldownsAsync_ReturnsNoCooldowns_WhenTornDoesNotSendThem(string body)
+    {
+        var result = await CreateClient(new FakeHandler(body)).GetCooldownsAsync(Key);
+
+        Assert.Null(result.Cooldowns);
     }
 
     private static TornClient CreateClient(HttpMessageHandler handler) =>

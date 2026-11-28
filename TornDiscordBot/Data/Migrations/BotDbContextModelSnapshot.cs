@@ -33,6 +33,37 @@ namespace TornDiscordBot.Data.Migrations
 
                     b.ToTable("RegisteredUsers");
                 });
+
+            modelBuilder.Entity("TornDiscordBot.Entities.Reminder", b =>
+                {
+                    b.Property<long>("DiscordUserId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("Type")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTimeOffset?>("LastSentAt")
+                        .HasColumnType("TEXT");
+
+                    b.Property<long>("NextCheckAt")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("SentCount")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("DiscordUserId", "Type");
+
+                    b.ToTable("Reminders");
+                });
+
+            modelBuilder.Entity("TornDiscordBot.Entities.Reminder", b =>
+                {
+                    b.HasOne("TornDiscordBot.Entities.RegisteredUser", null)
+                        .WithMany()
+                        .HasForeignKey("DiscordUserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
 #pragma warning restore 612, 618
         }
     }
