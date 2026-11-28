@@ -1,6 +1,10 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
+using NetCord.Hosting.Services.ApplicationCommands;
+using NetCord.Hosting.Services.ComponentInteractions;
+using NetCord.Services.ComponentInteractions;
+using TornDiscordBot.Commands;
 using TornDiscordBot.Data;
 using TornDiscordBot.Interfaces.Reminders;
 using TornDiscordBot.Models.Reminders;
@@ -29,6 +33,16 @@ public static class ReminderSetupExtensions
             builder.Services.AddSingleton<IReminderRepository, ReminderRepository>();
             builder.Services.AddTransient<IReminderService, ReminderService>();
             builder.Services.AddHostedService<ReminderBackgroundService>();
+        }
+    }
+
+    extension(IHost host)
+    {
+        /// <summary>Adds the reminder slash command and menu handler.</summary>
+        public void MapReminderModules()
+        {
+            host.AddApplicationCommandModule<ReminderCommands>();
+            host.AddComponentInteractionModule<StringMenuInteractionContext, ReminderMenuSelectionHandler>();
         }
     }
 }

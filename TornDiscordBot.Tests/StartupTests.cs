@@ -5,8 +5,15 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
+using NetCord;
+using NetCord.Hosting.Gateway;
+using NetCord.Hosting.Services.ApplicationCommands;
+using NetCord.Hosting.Services.ComponentInteractions;
+using NetCord.Services.ComponentInteractions;
+using TornDiscordBot.Entities;
 using TornDiscordBot.Extensions.Startup;
 using TornDiscordBot.Interfaces;
+using TornDiscordBot.Interfaces.Reminders;
 using TornDiscordBot.Models;
 using TornDiscordBot.Models.Reminders;
 
@@ -76,11 +83,13 @@ public sealed class StartupTests : IDisposable
     }
 
     [Fact]
-    public async Task StartedHost_ChecksRegisteredUsersCooldowns()
+    public async Task StartedHost_ChecksCooldownsForRemindersThatAreOn()
     {
         using var host = BuildHost();
         await host.MigrateDatabaseAsync();
         await host.Services.GetRequiredService<IRegisteredUserRepository>().SaveTornApiKeyAsync(UserId, Key);
+        await host.Services.GetRequiredService<IReminderRepository>()
+            .SetEnabledTypesAsync(UserId, [ReminderType.DrugCooldown]);
 
         await host.StartAsync();
         await _torn.FirstRequest.WaitAsync(TimeSpan.FromSeconds(10));
@@ -88,11 +97,26 @@ public sealed class StartupTests : IDisposable
     }
 
     [Fact]
+    public void CommandModules_AreAcceptedByNetCord()
+    {
+        var builder = Host.CreateEmptyApplicationBuilder(settings: null);
+        builder.Services
+            .AddDiscordGateway()
+            .AddApplicationCommands()
+            .AddComponentInteractions<ModalInteraction, ModalInteractionContext>()
+            .AddComponentInteractions<StringMenuInteraction, StringMenuInteractionContext>();
+        using var host = builder.Build(); // never started, so nothing connects to Discord
+
+        host.MapRegistrationModules();
+        host.MapReminderModules();
+    }
+
+    [Fact]
     public void AddRegistration_Throws_WhenMasterKeyIsMissing()
     {
         var builder = Host.CreateEmptyApplicationBuilder(settings: null);
 
-        Assert.Throws<InvalidOperationException>(() => builder.AddRegistration());
+        Assert.Throws<InvalidOperationException>(() => builder.AddRegistrationDependencies());
     }
 
     [Fact]
@@ -136,7 +160,7 @@ public sealed class StartupTests : IDisposable
             new ServiceProviderOptions { ValidateOnBuild = true, ValidateScopes = true }));
 
         builder.AddDatabase();
-        builder.AddRegistration();
+        builder.AddRegistrationDependencies();
         builder.AddTornClient();
         builder.AddReminderService();
         builder.Services.AddSingleton<IMessageSenderService, SilentSender>(); // stands in for Discord

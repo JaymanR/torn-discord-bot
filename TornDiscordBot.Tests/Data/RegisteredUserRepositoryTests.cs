@@ -96,6 +96,15 @@ public sealed class RegisteredUserRepositoryTests : IAsyncLifetime
     }
 
     [Fact]
+    public async Task IsRegisteredAsync_IsTrueOnlyForSavedUsers()
+    {
+        await _repository.SaveTornApiKeyAsync(User, Key);
+
+        Assert.True(await _repository.IsRegisteredAsync(User));
+        Assert.False(await _repository.IsRegisteredAsync(OtherUser));
+    }
+
+    [Fact]
     public async Task DeleteAsync_RemovesOnlyThatUser()
     {
         await _repository.SaveTornApiKeyAsync(User, Key);

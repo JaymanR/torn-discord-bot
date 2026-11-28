@@ -1,6 +1,6 @@
 namespace TornDiscordBot.Entities;
 
-/// <summary>The progress of one kind of reminder for a registered user.</summary>
+/// <summary>A kind of reminder that a registered user has turned on, with its progress.</summary>
 public class Reminder
 {
     public ulong DiscordUserId { get; set; }

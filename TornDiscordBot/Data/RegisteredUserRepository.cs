@@ -52,6 +52,14 @@ public sealed class RegisteredUserRepository(IDbContextFactory<BotDbContext> dbF
     }
 
     /// <inheritdoc />
+    public async Task<bool> IsRegisteredAsync(ulong discordUserId)
+    {
+        await using var db = await dbFactory.CreateDbContextAsync();
+
+        return await db.RegisteredUsers.AnyAsync(u => u.DiscordUserId == discordUserId);
+    }
+
+    /// <inheritdoc />
     public async Task<bool> DeleteAsync(ulong discordUserId)
     {
         await using var db = await dbFactory.CreateDbContextAsync();

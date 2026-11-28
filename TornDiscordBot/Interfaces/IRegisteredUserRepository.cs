@@ -13,6 +13,11 @@ public interface IRegisteredUserRepository
     /// <returns>The decrypted key, or <see langword="null"/> if none is stored.</returns>
     Task<string?> GetTornApiKeyAsync(ulong discordUserId);
 
+    /// <summary>Checks whether the user has registered a torn api key.</summary>
+    /// <param name="discordUserId">The Discord user to look for.</param>
+    /// <returns><see langword="true"/> if the user is registered.</returns>
+    Task<bool> IsRegisteredAsync(ulong discordUserId);
+
     /// <summary>Deletes the user, including their stored Torn API key.</summary>
     /// <param name="discordUserId">The Discord user who owns the key.</param>
     /// <returns><see langword="true"/> if a user was deleted; <see langword="false"/> if they weren't registered.</returns>

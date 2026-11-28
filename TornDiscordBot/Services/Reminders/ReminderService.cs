@@ -43,8 +43,9 @@ public sealed class ReminderService(
         if (apiKey is null) return;
 
         var result = await torn.GetCooldownsAsync(apiKey);
-        var reminder = await reminders.GetAsync(userId, ReminderType.DrugCooldown)
-                       ?? Reminder.Create(userId, ReminderType.DrugCooldown);
+        var reminder = await reminders.GetAsync(userId, ReminderType.DrugCooldown);
+        if (reminder is null) return;
+
         var now = time.GetUtcNow();
 
         if (result.Cooldowns is not { } cooldowns)
@@ -62,6 +63,6 @@ public sealed class ReminderService(
             }
         }
 
-        await reminders.SaveAsync(reminder);
+        await reminders.UpdateAsync(reminder);
     }
 }

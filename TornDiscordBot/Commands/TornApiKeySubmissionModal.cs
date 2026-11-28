@@ -9,7 +9,7 @@ using TornDiscordBot.Models;
 namespace TornDiscordBot.Commands;
 
 /// <summary>Handles submissions of the API key modal opened by <c>/register</c>.</summary>
-public partial class KeyModal(IRegisteredUserRepository userRepository, ITornClient tornClient, ILogger<KeyModal> logger)
+public partial class TornApiKeySubmissionModal(IRegisteredUserRepository userRepository, ITornClient tornClient, ILogger<TornApiKeySubmissionModal> logger)
     : ComponentInteractionModule<ModalInteractionContext>
 {
     /// <summary>Validates the submitted key with Torn, stores it if valid, and replies privately with the result.</summary>
@@ -37,7 +37,8 @@ public partial class KeyModal(IRegisteredUserRepository userRepository, ITornCli
                 case KeyValidationResult.Valid:
                     await userRepository.SaveTornApiKeyAsync(Context.User.Id, apiKey);
                     logger.LogInformation("Stored a Torn API key for Discord user {UserId}", Context.User.Id);
-                    reply = "Key saved. Use `/forget` at any time to delete it.";
+                    reply = "Key saved. Use `/reminders` to choose your reminders. " +
+                            "Use `/forget` at any time to delete your key from the database.";
                     break;
                 case KeyValidationResult.Invalid:
                     reply = "Torn rejected that key. Check it's correct and enabled, then try again.";

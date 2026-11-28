@@ -14,20 +14,22 @@ var token = SecretReader.Read(builder.Configuration, "Discord:Token", "/run/secr
                 "Discord token is not configured. Set Discord:Token or provide /run/secrets/discord_token.");
 
 builder.AddDatabase();
-builder.AddRegistration();
+builder.AddRegistrationDependencies();
 builder.AddTornClient();
-builder.AddMessaging();
+builder.AddMessagingService();
 builder.AddReminderService();
 
 builder.Services
     .AddDiscordGateway(options => options.Token = token)
     .AddApplicationCommands()
-    .AddComponentInteractions<ModalInteraction, ModalInteractionContext>();
+    .AddComponentInteractions<ModalInteraction, ModalInteractionContext>()
+    .AddComponentInteractions<StringMenuInteraction, StringMenuInteractionContext>();
 
 var host = builder.Build();
 
 await host.MigrateDatabaseAsync();
 
 host.MapRegistrationModules();
+host.MapReminderModules();
 
 await host.RunAsync();

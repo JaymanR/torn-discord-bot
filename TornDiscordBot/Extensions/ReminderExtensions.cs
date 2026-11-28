@@ -20,8 +20,8 @@ public static class ReminderExtensions
     extension(Reminder)
     {
         /// <summary>
-        /// Creates the reminder for a user who has never been checked. It sends nothing until a cooldown has been
-        /// seen, so registering with no cooldown running doesn't trigger messages.
+        /// Creates a reminder that has just been turned on. It sends nothing until a cooldown has been seen, so
+        /// turning it on with no cooldown running doesn't trigger messages.
         /// </summary>
         /// <param name="discordUserId">The Discord user being reminded.</param>
         /// <param name="type">The kind of reminder.</param>

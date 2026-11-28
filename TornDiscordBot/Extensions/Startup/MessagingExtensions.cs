@@ -11,7 +11,7 @@ public static class MessagingExtensions
     extension(IHostApplicationBuilder builder)
     {
         /// <summary>Registers the <see cref="IMessageSenderService"/>.</summary>
-        public void AddMessaging()
+        public void AddMessagingService()
         {
             builder.Services.AddSingleton<IMessageSenderService, MessageSenderService>();
         }

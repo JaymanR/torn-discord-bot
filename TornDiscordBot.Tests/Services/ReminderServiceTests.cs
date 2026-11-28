@@ -58,6 +58,7 @@ public sealed class ReminderServiceTests : IAsyncLifetime
             NullLogger<ReminderService>.Instance);
 
         await _users.SaveTornApiKeyAsync(UserId, Key);
+        await _reminders.SetEnabledTypesAsync(UserId, [ReminderType.DrugCooldown]);
     }
 
     public async Task DisposeAsync()
@@ -84,6 +85,42 @@ public sealed class ReminderServiceTests : IAsyncLifetime
         await RunUntilAsync(Hours(24));
 
         Assert.Empty(_sender.Messages);
+    }
+
+    [Fact]
+    public async Task DoesNothing_WhenReminderIsOff()
+    {
+        await _reminders.SetEnabledTypesAsync(UserId, []);
+        _torn.DrugCooldownEndsAt = Start + Hours(1);
+
+        await RunUntilAsync(Hours(24));
+
+        Assert.Empty(_sender.Messages);
+        Assert.Equal(0, _torn.Requests);
+    }
+
+    [Fact]
+    public async Task TurningReminderOff_StopsMessages()
+    {
+        _torn.DrugCooldownEndsAt = Start + Hours(1);
+        await RunUntilAsync(Hours(1, 4));
+
+        await _reminders.SetEnabledTypesAsync(UserId, []);
+        await RunUntilAsync(Hours(24));
+
+        Assert.Equal([Hours(1)], _sender.SentAfter);
+    }
+
+    [Fact]
+    public async Task ChoosingAReminderThatIsAlreadyOn_KeepsItsProgress()
+    {
+        _torn.DrugCooldownEndsAt = Start + Hours(1);
+        await RunUntilAsync(Hours(1, 4));
+
+        await _reminders.SetEnabledTypesAsync(UserId, [ReminderType.DrugCooldown]);
+        await RunUntilAsync(Hours(24));
+
+        Assert.Equal([Hours(1), Hours(1, 15), Hours(9, 15)], _sender.SentAfter);
     }
 
     [Fact]
@@ -126,6 +163,7 @@ public sealed class ReminderServiceTests : IAsyncLifetime
     {
         const ulong otherUserId = 43;
         await _users.SaveTornApiKeyAsync(otherUserId, Key);
+        await _reminders.SetEnabledTypesAsync(otherUserId, [ReminderType.DrugCooldown]);
         _torn.DrugCooldownEndsAt = Start + Hours(1);
         _sender.FailFor = UserId;
 

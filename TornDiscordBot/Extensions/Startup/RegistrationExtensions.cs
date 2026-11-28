@@ -2,6 +2,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using NetCord.Hosting.Services.ApplicationCommands;
 using NetCord.Hosting.Services.ComponentInteractions;
+using NetCord.Services.ComponentInteractions;
 using TornDiscordBot.Commands;
 using TornDiscordBot.Data;
 using TornDiscordBot.Interfaces;
@@ -16,7 +17,7 @@ public static class RegistrationExtensions
     {
         /// <summary>Registers the user repository and the encryption it depends on.</summary>
         /// <exception cref="InvalidOperationException">The master key is missing or invalid.</exception>
-        public void AddRegistration()
+        public void AddRegistrationDependencies()
         {
             var masterKey = SecretReader.Read(builder.Configuration, "Security:MasterKey", "/run/secrets/master_key")
                             ?? throw new InvalidOperationException(
@@ -34,7 +35,7 @@ public static class RegistrationExtensions
         public void MapRegistrationModules()
         {
             host.AddApplicationCommandModule<KeyCommands>();
-            host.AddComponentInteractionModule<KeyModal>();
+            host.AddComponentInteractionModule<ModalInteractionContext, TornApiKeySubmissionModal>();
         }
     }
 }
