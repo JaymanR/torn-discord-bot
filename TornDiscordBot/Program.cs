@@ -1,21 +1,35 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
+﻿using Microsoft.Extensions.Hosting;
+using NetCord;
 using NetCord.Hosting.Gateway;
-using TornDiscordBot.Interfaces;
-using TornDiscordBot.Services;
+using NetCord.Hosting.Services.ApplicationCommands;
+using NetCord.Hosting.Services.ComponentInteractions;
+using NetCord.Services.ComponentInteractions;
+using TornDiscordBot.Extensions.Startup;
+using TornDiscordBot.Security;
 
 var builder = Host.CreateApplicationBuilder(args);
 
-var token = builder.Configuration["Discord:Token"]
-            ?? throw new InvalidOperationException("Discord token is not configured.");
+var token = SecretReader.Read(builder.Configuration, "Discord:Token", "/run/secrets/discord_token")
+            ?? throw new InvalidOperationException(
+                "Discord token is not configured. Set Discord:Token or provide /run/secrets/discord_token.");
 
-builder.Services.AddSingleton<IMessageSenderService, MessageSenderService>();
-builder.Services.AddDiscordGateway(options => options.Token = token);
+builder.AddDatabase();
+builder.AddRegistrationDependencies();
+builder.AddTornClient();
+builder.AddMessagingService();
+builder.AddReminderService();
+
+builder.Services
+    .AddDiscordGateway(options => options.Token = token)
+    .AddApplicationCommands()
+    .AddComponentInteractions<ModalInteraction, ModalInteractionContext>()
+    .AddComponentInteractions<StringMenuInteraction, StringMenuInteractionContext>();
 
 var host = builder.Build();
 
-var sender = host.Services.GetRequiredService<IMessageSenderService>();
-await sender.SendAsync(1574807747135013004, "hello world");
+await host.MigrateDatabaseAsync();
 
+host.MapRegistrationModules();
+host.MapReminderModules();
 
 await host.RunAsync();

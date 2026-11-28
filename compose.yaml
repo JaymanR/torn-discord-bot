@@ -4,4 +4,29 @@
     build:
       context: .
       dockerfile: TornDiscordBot/Dockerfile
+    restart: unless-stopped
+    environment:
+      Database__Path: /data/torndiscordbot.db
+    # Read by the bot from /run/secrets/<name>. Create these files before starting; see README/setup notes.
+    secrets:
+      - discord_token
+      - master_key
+    volumes:
+      - botdata:/data
+    # The bot only makes outbound connections, so no ports are published.
+    read_only: true
+    tmpfs:
+      - /tmp
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
 
+secrets:
+  discord_token:
+    file: ./secrets/discord_token
+  master_key:
+    file: ./secrets/master_key
+
+volumes:
+  botdata:

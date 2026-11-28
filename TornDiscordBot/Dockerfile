@@ -1,4 +1,7 @@
 ﻿FROM mcr.microsoft.com/dotnet/runtime:10.0 AS base
+# Writable data directory for the SQLite database; created before dropping root so the
+# named volume mounted here inherits ownership by the non-root app user.
+RUN mkdir /data && chown $APP_UID /data
 USER $APP_UID
 WORKDIR /app
 
