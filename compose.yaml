@@ -7,8 +7,6 @@
     restart: unless-stopped
     environment:
       Database__Path: /data/torndiscordbot.db
-      # Channel for reminders. Set REMINDER_CHANNEL_ID in a .env file next to this one.
-      Reminders__ChannelId: ${REMINDER_CHANNEL_ID:?Set REMINDER_CHANNEL_ID in .env}
     # Read by the bot from /run/secrets/<name>. Create these files before starting; see README/setup notes.
     secrets:
       - discord_token
